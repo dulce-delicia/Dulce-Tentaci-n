@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Dulce Tentación 🧇</title>
+<style>
+body {
+  margin:0;
+  font-family:'Arial Rounded MT Bold',sans-serif;
+  background:linear-gradient(135deg,#ffe5ec,#fbc2eb,#a6c1ee);
+  color:#333;
+  text-align:center;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  overflow-x:hidden;
+  position:relative;
+}
+h1,h2,h3 {margin:15px 0;}
+.page {
+  display:none;
+  width:100%;
+  max-width:500px;
+  padding:25px;
+  border-radius:20px;
+  animation:fadeIn 0.7s ease-in-out;
+  position:relative;
+  background:transparent;
+}
+.active {display:block;}
+.options {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(100px,1fr));
+  gap:15px;
+  margin:20px 0;
+  justify-items:center;
+}
+.option {
+  width:100px;
+  height:60px;
+  border-radius:12px;
+  background:#ffe0eb;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:18px;
+  cursor:pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  border:2px solid transparent;
+  color:#333;
+  text-shadow:0 0 1px #fff;
+  position:relative;
+}
+.option:hover {transform:scale(1.05);box-shadow:0 0 10px rgba(255,192,203,0.6);}
+.option.selected {box-shadow:0 0 15px #ff5fa2;border-color:#ff5fa2;}
+button {
+  margin-top:15px;
+  padding:12px 25px;
+  background:#ff5fa2;
+  color:white;
+  border:none;
+  border-radius:12px;
+  font-size:16px;
+  cursor:pointer;
+  transition:background 0.3s;
+}
+button:hover {background:#e84393;}
+.back-btn {background:#999;margin-right:10px;}
+.extra-frutas {color:#ff1a75; font-weight:bold;}
+@keyframes fadeIn {from{opacity:0; transform:translateY(20px);}to{opacity:1; transform:translateY(0);}}
+.price {margin-top:10px; font-size:20px; font-weight:bold; color:#e84393;}
+.decor {
+  position:absolute;
+  font-size:24px;
+  animation: float 10s linear infinite;
+  opacity:0.6;
+}
+@keyframes float {
+  0% {transform:translateY(100vh) rotate(0deg);}
+  100% {transform:translateY(-1200px) rotate(360deg);}
+}
+input,select {padding:10px;margin:8px 0;width:80%;font-size:16px;border-radius:8px;border:1px solid #ccc;}
+label {font-weight:bold;}
+.section {margin:20px 0; padding:15px; background:rgba(255,255,255,0.2); border-radius:12px;}
+</style>
+</head>
+<body>
+
+<!-- Emojis flotantes -->
+<div class="decor" style="left:10%; animation-duration:10s;">🍓</div>
+<div class="decor" style="left:20%; animation-duration:12s;">🥝</div>
+<div class="decor" style="left:30%; animation-duration:9s;">🍪</div>
+<div class="decor" style="left:40%; animation-duration:11s;">🍫</div>
+<div class="decor" style="left:50%; animation-duration:8s;">🍌</div>
+<div class="decor" style="left:60%; animation-duration:10s;">🥭</div>
+<div class="decor" style="left:70%; animation-duration:12s;">🍍</div>
+<div class="decor" style="left:80%; animation-duration:9s;">🥮</div>
+<div class="decor" style="left:90%; animation-duration:11s;">🌈</div>
+
+<!-- Bienvenida -->
+<div class="page active" id="welcome">
+  <h1>✨ Bienvenido a Dulce Tentación 🧇🍓🍫✨</h1>
+  <p>¡Arma tu waffle como más te guste! 😋</p>
+  <button id="btnStart">Comenzar mi pedido 🍴</button>
+</div>
+
+<!-- Waffles -->
+<div class="page" id="waffles">
+  <h2>Escoge tu waffle 🧇</h2>
+  <div class="options" id="waffleOptions"></div>
+  <div class="price" id="price">Total: $0</div>
+  <button class="back-btn" onclick="prevPage('welcome')">⬅ Atrás</button>
+  <button onclick="nextPage('frutas')">Siguiente ➡</button>
+</div>
+
+<!-- Frutas -->
+<div class="page" id="frutas">
+  <h2>🍓 Escoge tus frutas</h2>
+  <p>Puedes escoger hasta 2 frutas gratis, cada fruta adicional cuesta $2.000</p>
+  <div class="options" id="frutaOptions"></div>
+  <div class="price" id="priceFrutas">Total: $0</div>
+  <button class="back-btn" onclick="prevPage('waffles')">⬅ Atrás</button>
+  <button onclick="nextPage('untables')">Siguiente ➡</button>
+</div>
+
+<!-- Untables -->
+<div class="page" id="untables">
+  <h2>🥄 Escoge tu untable</h2>
+  <div class="options" id="untableOptions"></div>
+  <div class="price" id="priceUntables">Total: $0</div>
+  <button class="back-btn" onclick="prevPage('frutas')">⬅ Atrás</button>
+  <button onclick="nextPage('toppings')">Siguiente ➡</button>
+</div>
+
+<!-- Toppings -->
+<div class="page" id="toppings">
+  <h2>🍪 Escoge toppings</h2>
+  <div class="options" id="toppingOptions"></div>
+  <div class="price" id="priceToppings">Total: $0</div>
+  <button class="back-btn" onclick="prevPage('untables')">⬅ Atrás</button>
+  <button onclick="nextPage('pago')">Siguiente ➡</button>
+</div>
+
+<!-- Pago y Entrega -->
+<div class="page" id="pago">
+  <div class="section">
+    <h2>💳 Método de pago</h2>
+    <select id="metodoPago" onchange="mostrarCamposPago()">
+      <option value="">Selecciona...</option>
+      <option value="tarjeta">Tarjeta</option>
+      <option value="transferencia">Transferencia bancaria</option>
+      <option value="contraentrega">Contraentrega</option>
+    </select>
+    <div id="camposPago"></div>
+  </div>
+
+  <div class="section">
+    <h2>🏠 Dirección y hora de entrega</h2>
+    <label>Dirección:</label><br>
+    <input type="text" id="direccionEntrega" placeholder="Calle, número, barrio"><br>
+    <label>Hora de entrega:</label><br>
+    <input type="time" id="horaEntrega">
+  </div>
+
+  <div class="price" id="precioFinal">Total: $0</div>
+  <button class="back-btn" onclick="prevPage('toppings')">⬅ Atrás</button>
+  <button onclick="finalizarCompra()">Finalizar compra ✅</button>
+</div>
+
+<!-- Confirmación -->
+<div class="page" id="confirmacion">
+  <h2>🎉 ¡Gracias por tu compra! 🎉</h2>
+  <div id="resumen"></div>
+  <h3>✨ Tu waffle llegará pronto ✨</h3>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const preciosWaffles = {"Cuarto 🧇":11000, "Medio 🧇":18000, "Completo 🧇":25000, "Especial 🧇":30000};
+  const frutasDisponibles = ["🍓 Fresa","🍎 Manzana","🍌 Banano","🥭 Mango","🍍 Piña","🥝 Kiwi","🍑 Durazno","🍒 Cereza"];
+  const precioFrutaExtra = 2000;
+  const untables = {"Arequipe 🥮":3500, "Nutella 🍫":4500, "Chocolate 🍩":4500, "Mantequilla de maní 🥜":4000};
+  const toppings = {"🌈 Chispas":1500, "🍯 Salsas dulces":2500, "🍪 Galleta":2000, "🥛 Chantilly":4000};
+
+  let pedido = {waffle:null, frutas:[], untable:null, toppings:[], direccion:"", hora:""};
+  let total = 0;
+
+  function renderOptions(){
+    let html='';
+    for(let[nombre,precio] of Object.entries(preciosWaffles))
+      html+=`<div class="option" onclick="selectWaffle('${nombre}',${precio},this)">${nombre}<br>$${precio}</div>`;
+    document.getElementById("waffleOptions").innerHTML=html;
+
+    html=frutasDisponibles.map(f=>`<div class="option" onclick="toggleFruta('${f}',this)">${f}</div>`).join('');
+    document.getElementById("frutaOptions").innerHTML=html;
+
+    html='';
+    for(let[nombre,precio] of Object.entries(untables))
+      html+=`<div class="option" onclick="selectUntable('${nombre}', ${precio}, this)">${nombre}<br>$${precio}</div>`;
+    document.getElementById("untableOptions").innerHTML=html;
+
+    html='';
+    for(let[nombre,precio] of Object.entries(toppings))
+      html+=`<div class="option" onclick="toggleTopping('${nombre}',this)">${nombre}<br>$${precio}</div>`;
+    document.getElementById("toppingOptions").innerHTML=html;
+  }
+
+  renderOptions();
+
+  window.selectWaffle = function(nombre, precio, el){
+    pedido.waffle=nombre;
+    total=precio;
+    document.querySelectorAll("#waffleOptions .option").forEach(o=>o.classList.remove("selected"));
+    el.classList.add("selected");
+    updatePrice();
+  }
+
+  window.toggleFruta = function(nombre, el){
+    if(pedido.frutas.includes(nombre)){
+      pedido.frutas = pedido.frutas.filter(f=>f!==nombre);
+      el.classList.remove("selected");
+    } else {
+      pedido.frutas.push(nombre);
+      el.classList.add("selected");
+    }
+    updatePrice();
+  }
+
+  window.selectUntable = function(nombre, precio, el){
+    pedido.untable = {nombre, precio};
+    document.querySelectorAll("#untableOptions .option").forEach(o=>o.classList.remove("selected"));
+    el.classList.add("selected");
+    updatePrice();
+  }
+
+  window.toggleTopping = function(nombre, el){
+    if(pedido.toppings.includes(nombre)){
+      pedido.toppings = pedido.toppings.filter(t=>t!==nombre);
+      el.classList.remove("selected");
+    } else {
+      pedido.toppings.push(nombre);
+      el.classList.add("selected");
+    }
+    updatePrice();
+  }
+
+  function updatePrice(){
+    let extraFrutas = 0;
+    if(pedido.frutas.length > 2){
+      extraFrutas = (pedido.frutas.length - 2) * precioFrutaExtra;
+    }
+    let precioUntable = pedido.untable ? pedido.untable.precio : 0;
+    let precioToppings = pedido.toppings.reduce((s,t)=>s+toppings[t],0);
+    let subtotal = (pedido.waffle ? preciosWaffles[pedido.waffle] : 0) + extraFrutas + precioUntable + precioToppings;
+
+    document.getElementById("price").innerText = "Total: $" + subtotal;
+    document.getElementById("priceFrutas").innerText = "Total: $" + subtotal;
+    document.getElementById("priceUntables").innerText = "Total: $" + subtotal;
+    document.getElementById("priceToppings").innerText = "Total: $" + subtotal;
+    document.getElementById("precioFinal").innerText = "Total: $" + subtotal;
+  }
+
+  window.nextPage = function(id){
+    document.querySelector(".page.active").classList.remove("active");
+    document.getElementById(id).classList.add("active");
+  }
+
+  window.prevPage = function(id){
+    document.querySelector(".page.active").classList.remove("active");
+    document.getElementById(id).classList.add("active");
+  }
+
+  document.getElementById("btnStart").addEventListener("click",()=>nextPage('waffles'));
+
+  window.mostrarCamposPago = function(){
+    const metodo=document.getElementById("metodoPago").value;
+    const div=document.getElementById("camposPago");
+    if(metodo==="tarjeta") div.innerHTML=`<input type="text" placeholder="Número de tarjeta"><br><input type="password" placeholder="Clave">`;
+    else if(metodo==="transferencia"){let numCuenta=Math.floor(Math.random()*90000000)+10000000; div.innerHTML=`<p>Cuenta: Dulce Tentación</p><p>Número: ${numCuenta}</p>`;}
+    else div.innerHTML='';
+  }
+
+  window.finalizarCompra = function(){
+    pedido.direccion = document.getElementById("direccionEntrega").value;
+    pedido.hora = document.getElementById("horaEntrega").value;
+    nextPage('confirmacion');
+
+    let frutasResumen = pedido.frutas.length ? pedido.frutas.join(", ") : "ninguna";
+    let toppingsResumen = pedido.toppings.length ? pedido.toppings.join(", ") : "ninguno";
+
+    document.getElementById("resumen").innerHTML = `
+      <ul style="text-align:left; list-style:circle; padding-left:20px;">
+        <li><strong>Waffle:</strong> ${pedido.waffle}</li>
+        <li><strong>Frutas:</strong> ${frutasResumen}</li>
+        <li><strong>Untable:</strong> ${pedido.untable ? pedido.untable.nombre : "ninguno"}</li>
+        <li><strong>Toppings:</strong> ${toppingsResumen}</li>
+        <li><strong>Dirección de entrega:</strong> ${pedido.direccion}</li>
+        <li><strong>Hora de entrega:</strong> ${pedido.hora}</li>
+      </ul>
+    `;
+  }
+
+});
+</script>
+</body>
+</html>
